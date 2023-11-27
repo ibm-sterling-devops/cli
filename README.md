@@ -21,9 +21,9 @@ The engine that performs all tasks is written in Ansible, you can directly use t
 
 
 ## Want to contribute to IBM Sterling - Command Line Interface?
-We welcome every Maximo Application Suite users, developers and enthusiasts to contribute to the IBM Sterling - Command Line Interface while fixing code issues and implementing new automated functionalities.
+We welcome every IBM Sterling users, developers and enthusiasts to contribute to the IBM Sterling - Command Line Interface while fixing code issues and implementing new automated functionalities.
 
-You can contribute to this collection by raising [a new issue](https://github.com/ibm-sterling-devops/cli/issues) with suggestions on how to make our MAS automation engine even better, or if you want to become a new code contributor, please refer to the [Contributing section](CONTRIBUTING.md) and learn more about how to get started.
+You can contribute to this collection by raising [a new issue](https://github.com/ibm-sterling-devops/cli/issues) with suggestions on how to make our IBM Sterling automation engine even better, or if you want to become a new code contributor, please refer to the [Contributing section](CONTRIBUTING.md) and learn more about how to get started.
 
 
 # Contributors
