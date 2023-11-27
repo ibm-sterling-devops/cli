@@ -23,9 +23,6 @@ RUN umask 0002 && mkdir -p $ANSIBLE_COLLECTIONS_PATH && \
     chmod 775 /app-root/*.sh && \
     chmod -R ug+w /app-root/functions && \
     chmod 755 /app-root/sterling  
-# && \
-#    chmod -R g+w $ANSIBLE_COLLECTIONS_PATH/ibm/mas_devops && \
-#    ln -s $ANSIBLE_COLLECTIONS_PATH/ibm/mas_devops /mascli/ansible-devops
 
 # Baixa o cliente OpenShift (substitua a versão conforme necessário)
 RUN wget -nv https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -O /tmp/openshift-client-linux.tar.gz && \
