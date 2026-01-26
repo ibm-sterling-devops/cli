@@ -27,23 +27,14 @@ if [[ "$TARGET_PLATFORM" == "" ]]
 fi
 #fallback to 1.20.0 if version not defined
 if [[ "$IBMPAK_VERSION" == "" ]]
-  then IBMPAK_VERSION=1.20.0
+  then IBMPAK_VERSION=1.21.1
 fi
 
-if [[ "$TARGET_PLATFORM" != "arm64" ]]; then
-  curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v${IBMPAK_VERSION}/oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz -o oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
-  tar -xf oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
-  mv oc-ibm_pak-linux-$TARGET_PLATFORM /usr/local/bin/oc-ibm_pak
-  rm oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
-  rm -rf /app-root/.ibm-pak
-fi
-
-# Waiting for release in https://github.com/IBM/ibm-pak/releases, then can be removed
-if [[ "$TARGET_PLATFORM" == "arm64" ]]; then
-  mv /tmp/install/oc-ibm_pak-linux-$TARGET_PLATFORM /usr/local/bin/oc-ibm_pak
-  chmod +x /usr/local/bin/oc-ibm_pak
-  rm -rf /app-root/.ibm-pak
-fi
+curl -L https://github.com/IBM/ibm-pak/releases/download/v${IBMPAK_VERSION}/oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz -o oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
+tar -xf oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
+mv oc-ibm_pak-linux-$TARGET_PLATFORM /usr/local/bin/oc-ibm_pak
+rm oc-ibm_pak-linux-$TARGET_PLATFORM.tar.gz
+rm -rf /app-root/.ibm-pak
 
 echo "oc ibm-pak version:"
 oc ibm-pak --version
