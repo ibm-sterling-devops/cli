@@ -1,0 +1,11 @@
+*.DS_Store*
+.vscode
+
+*.pyc
+
+
+target/
+tmp/
+
+
+.github
