@@ -43,7 +43,21 @@ git clone https://github.com/ibm-sterling-devops/cli.git
 cd cli/image
 ```
 
-3. Build your image:
+3. Export variables:
+
+```bash
+export QUAYIO_USERNAME=<your-quay-username>
+export QUAYIO_PASSWORD=<your-quay-password>
+export QUAYIO_REPO=<your-quay-repository>
+```
+
+4. Before you can push your image to Quay.io, you need to log in:
+
+```bash
+podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
+```
+
+5. Build your image:
 ```bash
 podman build --build-arg ARCHITECTURE=amd64 -t sterling-cli:1.0.0 .
 ```
@@ -67,27 +81,14 @@ podman run -it --rm -v "$(pwd)":/workspace localhost/sterling-cli:1.0.0
 
 ## Publish image to Quay.io
 
-1. Export variables:
 
-```bash
-export QUAYIO_USERNAME=<your-quay-username>
-export QUAYIO_PASSWORD=<your-quay-password>
-export QUAYIO_REPO=<your-quay-repository>
-```
-
-2. Before you can push your image to Quay.io, you need to log in:
-
-```bash
-podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
-```
-
-3. Tag your image with your Quay.io repository name:
+1. Tag your image with your Quay.io repository name:
 
 ```bash
 podman tag localhost/sterling-cli:1.0.0 quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
 ```
 
-4. Finally, push your tagged image to Quay.io:
+2. Finally, push your tagged image to Quay.io:
 
 ```bash
 podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0

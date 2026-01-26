@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-314
+FROM registry.access.redhat.com/ubi9/python-312
 ARG VERSION_LABEL
 ARG ARCHITECTURE
 
@@ -16,7 +16,7 @@ ENV ANSIBLE_VERSION=2.15 \
 
 # 1. Create sterling user and set up home directory
 USER root
-RUN useradd -u 1001 -r -g 0 -d /app-root -s /sbin/nologin \
+RUN useradd -u 1010 -r -g 0 -d /app-root -s /sbin/nologin \
     -c "Sterling user" sterling && \
     mkdir -p /app-root && \
     chown -R sterling:0 /app-root && \
