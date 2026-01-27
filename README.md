@@ -158,6 +158,41 @@ podman pull $QUAYIO_REPO/sterling-cli:1.0.0
 
 Podman/Docker will automatically select the appropriate architecture based on the host system.
 
+### Building on Separate Machines
+
+You can build each architecture on its native machine and then create the manifest list from any machine:
+
+**On AMD64 machine:**
+```bash
+export QUAYIO_REPO=quay.io/<your-quay-repository>
+podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
+podman build --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubi9 -t $QUAYIO_REPO/sterling-cli:1.0.0-amd64 .
+podman push $QUAYIO_REPO/sterling-cli:1.0.0-amd64
+```
+
+**On ARM64 machine:**
+```bash
+export QUAYIO_REPO=quay.io/<your-quay-repository>
+podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
+podman build --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubi9 -t $QUAYIO_REPO/sterling-cli:1.0.0-arm64 .
+podman push $QUAYIO_REPO/sterling-cli:1.0.0-arm64
+```
+
+**On any machine (create manifest list):**
+```bash
+export QUAYIO_REPO=quay.io/<your-quay-repository>
+podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
+podman manifest create $QUAYIO_REPO/sterling-cli:1.0.0
+podman manifest add $QUAYIO_REPO/sterling-cli:1.0.0 $QUAYIO_REPO/sterling-cli:1.0.0-amd64
+podman manifest add $QUAYIO_REPO/sterling-cli:1.0.0 $QUAYIO_REPO/sterling-cli:1.0.0-arm64
+podman manifest push $QUAYIO_REPO/sterling-cli:1.0.0
+```
+
+This approach is recommended when:
+- You have native hardware for each architecture (faster builds, no emulation overhead)
+- Cross-platform builds fail or are too slow
+- You want to ensure optimal performance for each architecture
+
 
 ## Want to contribute to IBM Sterling - Command Line Interface?
 We welcome every Maximo Application Suite users, developers and enthusiasts to contribute to the IBM Sterling - Command Line Interface while fixing code issues and implementing new automated functionalities.
