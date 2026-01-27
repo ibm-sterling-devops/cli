@@ -39,18 +39,6 @@ Pre-built container images are available on Quay.io for immediate use. These ima
 
 ### Pull the Latest Image
 
-To pull the latest version of the Sterling CLI container:
-
-```bash
-# Using Podman
-podman pull quay.io/ibm-sterling-devops/sterling-cli:latest
-
-# Using Docker
-docker pull quay.io/ibm-sterling-devops/sterling-cli:latest
-```
-
-### Pull a Specific Version
-
 To pull a specific version:
 
 ```bash
@@ -67,10 +55,10 @@ After pulling the image, you can run it interactively:
 
 ```bash
 # Using Podman
-podman run -it --rm quay.io/ibm-sterling-devops/sterling-cli:latest
+podman run -it --rm quay.io/ibm-sterling-devops/sterling-cli:1.0.0
 
 # Using Docker
-docker run -it --rm quay.io/ibm-sterling-devops/sterling-cli:latest
+docker run -it --rm quay.io/ibm-sterling-devops/sterling-cli:1.0.0
 ```
 
 ### Mount Local Directories
