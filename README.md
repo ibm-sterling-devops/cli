@@ -58,46 +58,76 @@ podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
 ```
 
 5. Build your image:
+
+**Red Hat UBI9 Python 3.12 based image:**
 ```bash
-podman build --build-arg ARCHITECTURE=amd64 -t sterling-cli:1.0.0 .
+podman build --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubi9 -t sterling-cli:1.0.0 .
 ```
 
 For ARM64 architecture:
 ```bash
-podman build --build-arg ARCHITECTURE=arm64 -t sterling-cli:1.0.0 .
+podman build --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubi9 -t sterling-cli:1.0.0 .
 ```
+
+
+**Ubuntu 24.04 based image (default):**
+```bash
+podman build --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubuntu -t sterling-cli:1.0.0-ubuntu .
+```
+
+For ARM64 architecture:
+```bash
+podman build --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubuntu -t sterling-cli:1.0.0-ubuntu .
+```
+
 
 ## Test image
 
 To run your container and start a shell session, use:
 
+**Red Hat UBI9 based image:**
 ```bash
-mkdir ~/sterling-workspace
+podman run -it --rm localhost/sterling-cli:1.0.0
+```
 
-cd ~/sterling-workspace
-
-podman run -it --rm -v "$(pwd)":/workspace localhost/sterling-cli:1.0.0
+**Ubuntu based image:**
+```bash
+podman run -it --rm localhost/sterling-cli:1.0.0-ubuntu
 ```
 
 ## Publish image to Quay.io
 
-
 1. Tag your image with your Quay.io repository name:
 
+**Red Hat UBI9 based image:**
 ```bash
 podman tag localhost/sterling-cli:1.0.0 quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
 ```
 
+**Ubuntu based image:**
+```bash
+podman tag localhost/sterling-cli:1.0.0-ubuntu quay.io/$QUAYIO_REPO/sterling-cli:1.0.0-ubuntu
+```
+
+
+
 2. Finally, push your tagged image to Quay.io:
 
+**Red Hat UBI9 based image:**
 ```bash
 podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
 ```
 
+**Ubuntu based image:**
+```bash
+podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0-ubuntu
+```
+
+
 ## Want to contribute to IBM Sterling - Command Line Interface?
 We welcome every Maximo Application Suite users, developers and enthusiasts to contribute to the IBM Sterling - Command Line Interface while fixing code issues and implementing new automated functionalities.
 
-You can contribute to this collection by raising [a new issue](https://github.com/ibm-sterling-devops/cli/issues) with suggestions on how to make our MAS automation engine even better, or if you want to become a new code contributor, please refer to the [Contributing section](CONTRIBUTING.md) and learn more about how to get started.
+You can contribute to this collection by raising [a new issue](https://github.com/ibm-sterling-devops/cli/issues) with suggestions on how to make our Sterling automation engine even better.
 
 
 # Contributors
@@ -106,8 +136,10 @@ See the list of [contributors](https://github.com/ibm-sterling-devops/cli/contri
 
 # License
 
-This project is licensed under the Eclipse Public License - v 2.0 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Eclipse Public License - v 2.0 - see the [LICENSE](LICENSE) file for details
 
 ## Disclaimer
 
-This product is not officially supported, and can be used as is. And any feedback will be welcome. We does not make any warranty about the completeness, reliability and accuracy of this code. Any action you take by using this code is strictly at your own risk, and this project will not be liable for any losses and damages in connection with the use of this code.
+This repository is a community-driven projects and is not officially supported or endorsed by IBM. While members of the community may include IBM employees, this project is independent of IBM's official support channels. Please note that any contributions, issues, or inquiries regarding this repository should be directed to the community maintainers and not to IBM's support teams. We appreciate your understanding and participation in this community-driven initiative.
+
+This code can be used as is. And any feedback will be welcome. We does not make any warranty about the completeness, reliability and accuracy of this code. Any action you take by using this code is strictly at your own risk, and this project will not be liable for any losses and damages in connection with the use of this code.

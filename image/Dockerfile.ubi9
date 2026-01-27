@@ -1,0 +1,76 @@
+FROM registry.access.redhat.com/ubi9/python-312:latest
+ARG ARCHITECTURE=amd64
+
+LABEL maintainer="IBM Sterling Devops Community" \
+      description="Custom image for Sterling deployments with oc, kubectl, helm, git, and ansible (Red Hat UBI9)" \
+      version="1.0"
+
+# Set environment variables
+ENV ANSIBLE_VERSION=2.20 \
+    HELM_VERSION=3.16.3 \
+    IBMPAK_VERSION=1.21.1 \
+    IBMCLI_VERSION=2.40.0 \
+    OC_VERSION=4.20.10 \
+    HOME=/app-root \
+    ANSIBLE_CONFIG=/app-root/ansible-ibm-sterling/ansible.cfg \
+    ANSIBLE_LOCAL_TEMP=/app-root/.ansible/tmp \
+    PATH="/app-root:/usr/local/bin:${PATH}" \
+    VIRTUAL_ENV_DISABLE_PROMPT=1 \
+    PYTHONWARNINGS="ignore:Unverified HTTPS request"
+
+USER root
+
+# Create sterling user first
+RUN useradd -u 1010 -g 0 -d /app-root -s /bin/bash -c "Sterling user" sterling && \
+    install -d -m 2775 -o sterling -g root /app-root
+
+# Install system dependencies
+RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip && \
+    dnf clean all && \
+    rm -rf /var/cache/yum /var/cache/dnf
+
+# Copy installation scripts
+COPY install /tmp/install
+
+# Install Python packages
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --no-cache-dir -r /tmp/install/requirements.txt
+
+# Install CLI tools
+RUN cd /tmp && \
+    bash -x /tmp/install/install-helm.sh --target-platform $ARCHITECTURE --helm-version $HELM_VERSION && \
+    bash -x /tmp/install/install-oc-client.sh --target-platform $ARCHITECTURE && \
+    bash -x /tmp/install/install-ibmcloud.sh --target-platform $ARCHITECTURE --ibmcli-version $IBMCLI_VERSION && \
+    bash -x /tmp/install/install-oc-ibmpak.sh --target-platform $ARCHITECTURE --ibmpak-version $IBMPAK_VERSION && \
+    bash -x /tmp/install/install-rclone.sh --target-platform $ARCHITECTURE && \
+    # Verify installations
+    echo "=== Verifying installations ===" && \
+    ls -lah /usr/local/bin/ && \
+    helm version && \
+    oc version --client && \
+    kubectl version --client && \
+    ibmcloud version && \
+    oc ibm-pak --version && \
+    rclone version
+
+# Install Ansible collections and cleanup
+RUN ansible-galaxy collection install kubernetes.core community.general && \
+    # Fix permissions for directories created during installation
+    chown -R sterling:0 /app-root/.bluemix /app-root/.ansible /app-root/.config /app-root/.ibm-pak 2>/dev/null || true && \ls 
+    # Clean up
+    rm -rf /tmp/install /tmp/* /var/tmp/* /root/.cache /root/.ansible && \
+    rm -rf /usr/share/doc/* /usr/share/man/* /usr/share/info/* && \
+    find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} + && \
+    find /usr/lib64/python3.12 -name "*.pyc" -delete && \
+    find /usr/lib64/python3.12 -name "*.pyo" -delete && \
+    find /usr/lib64/python3.12 -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+
+# Clone ansible-ibm-sterling repository
+USER sterling
+WORKDIR /app-root
+RUN git clone https://github.com/ibm-sterling-devops/ansible-ibm-sterling.git
+
+# Setup working environment
+USER sterling
+WORKDIR /app-root
+CMD ["/bin/bash"]
