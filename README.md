@@ -50,7 +50,7 @@ cd cli/image
 ```bash
 export QUAYIO_USERNAME=<your-quay-username>
 export QUAYIO_PASSWORD=<your-quay-password>
-export QUAYIO_REPO=<your-quay-repository>
+export QUAYIO_REPO=quay.io/<your-quay-repository>
 ```
 
 4. Before you can push your image to Quay.io, you need to log in:
@@ -84,14 +84,79 @@ podman run -it --rm localhost/sterling-cli:1.0.0
 1. Tag your image with your Quay.io repository name:
 
 ```bash
-podman tag localhost/sterling-cli:1.0.0 quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
+podman tag localhost/sterling-cli:1.0.0 $QUAYIO_REPO/sterling-cli:1.0.0
 ```
 
 2. Finally, push your tagged image to Quay.io:
 
 ```bash
-podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
+podman push $QUAYIO_REPO/sterling-cli:1.0.0
 ```
+
+## Build Multi-Architecture (Manifest List)
+
+To create a multi-architecture image that supports both AMD64 and ARM64 platforms, follow these steps:
+
+### Prerequisites
+- Podman or Docker with buildx support
+- Access to Quay.io (for publishing images)
+
+### Build and Push Multi-Architecture Image
+
+1. Build images for both architectures:
+
+**Build AMD64 image:**
+```bash
+podman build --platform linux/amd64 --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubi9 -t $QUAYIO_REPO/sterling-cli:1.0.0-amd64 .
+```
+
+**Build ARM64 image:**
+```bash
+podman build --platform linux/arm64 --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubi9 -t $QUAYIO_REPO/sterling-cli:1.0.0-arm64 .
+```
+
+2. Push both architecture-specific images:
+
+```bash
+podman push $QUAYIO_REPO/sterling-cli:1.0.0-amd64
+podman push $QUAYIO_REPO/sterling-cli:1.0.0-arm64
+```
+
+3. Create and push the manifest list:
+
+```bash
+podman manifest create $QUAYIO_REPO/sterling-cli:1.0.0
+podman manifest add $QUAYIO_REPO/sterling-cli:1.0.0 $QUAYIO_REPO/sterling-cli:1.0.0-amd64
+podman manifest add $QUAYIO_REPO/sterling-cli:1.0.0 $QUAYIO_REPO/sterling-cli:1.0.0-arm64
+podman manifest push $QUAYIO_REPO/sterling-cli:1.0.0
+```
+
+4. (Optional) Create and push a `latest` tag:
+
+```bash
+podman manifest create $QUAYIO_REPO/sterling-cli:latest
+podman manifest add $QUAYIO_REPO/sterling-cli:latest $QUAYIO_REPO/sterling-cli:1.0.0-amd64
+podman manifest add $QUAYIO_REPO/sterling-cli:latest $QUAYIO_REPO/sterling-cli:1.0.0-arm64
+podman manifest push $QUAYIO_REPO/sterling-cli:latest
+```
+
+### Verify Multi-Architecture Support
+
+To verify that your manifest list includes both architectures:
+
+```bash
+podman manifest inspect $QUAYIO_REPO/sterling-cli:1.0.0
+```
+
+### Using the Multi-Architecture Image
+
+Once published, users can pull the image without specifying the architecture:
+
+```bash
+podman pull $QUAYIO_REPO/sterling-cli:1.0.0
+```
+
+Podman/Docker will automatically select the appropriate architecture based on the host system.
 
 
 ## Want to contribute to IBM Sterling - Command Line Interface?
