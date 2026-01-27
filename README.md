@@ -173,6 +173,10 @@ See the list of [contributors](https://github.com/ibm-sterling-devops/cli/contri
 
 This project is licensed under the Eclipse Public License - v 2.0 - see the [LICENSE](LICENSE) file for details
 
+## Troubleshooting
+
+For common issues and solutions, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
 ## Disclaimer
 
 This repository is a community-driven projects and is not officially supported or endorsed by IBM. While members of the community may include IBM employees, this project is independent of IBM's official support channels. Please note that any contributions, issues, or inquiries regarding this repository should be directed to the community maintainers and not to IBM's support teams. We appreciate your understanding and participation in this community-driven initiative.
