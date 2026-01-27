@@ -56,7 +56,7 @@ RUN cd /tmp && \
 # Install Ansible collections and cleanup
 RUN ansible-galaxy collection install kubernetes.core community.general && \
     # Fix permissions for directories created during installation
-    chown -R sterling:0 /app-root/.bluemix /app-root/.ansible /app-root/.config /app-root/.ibm-pak 2>/dev/null || true && \ls 
+    chown -R sterling:0 /app-root/.bluemix /app-root/.ansible /app-root/.config /app-root/.ibm-pak 2>/dev/null || true && \
     # Clean up
     rm -rf /tmp/install /tmp/* /var/tmp/* /root/.cache /root/.ansible && \
     rm -rf /usr/share/doc/* /usr/share/man/* /usr/share/info/* && \
