@@ -10,22 +10,24 @@ Provides:
 
 | package        | Version | amd64 | arm64 |
 |----------------|---------|-------|-------|
-| python3        | 3.14    |  ✔️   |  ✔️  |
-| helm           | 3       |  ✔️   |  ✔️  |
-| oc             |         |  ✔️   |  ✔️  |
-| oc ibm-pak     |         |  ✔️   |  ✔️  |
-| vim            |         |  ✔️   |  ✔️  |
-| jq             |         |  ✔️   |  ✔️  |
-| yq             |         |  ✔️   |  ✔️  |
-| rclone         |         |  ✔️   |  ✔️  |
-| kubectl        |         |  ✔️   |  ✔️  |
-| ibmcloud       |         |  ✔️   |  ✔️  |
+| python3        | 3.12    |  ✔️   |  ✔️  |
+| helm           | 3.16.3  |  ✔️   |  ✔️  |
+| oc             | latest  |  ✔️   |  ✔️  |
+| oc ibm-pak     | 1.21.1  |  ✔️   |  ✔️  |
+| rclone         | latest  |  ✔️   |  ✔️  |
+| kubectl        | latest  |  ✔️   |  ✔️  |
+| ibmcloud       | 2.40.0  |  ✔️   |  ✔️  |
 
 
 The engine that performs all tasks is written in Ansible, you can directly use the same automation outside of this CLI if you wish.  The code is open source and available in [ibm-sterling-devops/ansible-ibm-sterling](https://github.com/ibm-sterling-devops/ansible-ibm-sterling).
 
 
 ## Building IBM Sterling CLI images manually
+
+### Available Images
+
+- **Red Hat UBI9 Python 3.12 based image** (default) - Instructions below
+- **Ubuntu 24.04 based image** - See [README-ubuntu.md](README-ubuntu.md)
 
 ### Prerequisites
 - Podman or Docker installed on your system
@@ -57,70 +59,38 @@ export QUAYIO_REPO=<your-quay-repository>
 podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
 ```
 
-5. Build your image:
+5. Build your Red Hat UBI9 based image:
 
-**Red Hat UBI9 Python 3.12 based image:**
+**For AMD64 architecture:**
 ```bash
 podman build --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubi9 -t sterling-cli:1.0.0 .
 ```
 
-For ARM64 architecture:
+**For ARM64 architecture:**
 ```bash
 podman build --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubi9 -t sterling-cli:1.0.0 .
 ```
 
-
-**Ubuntu 24.04 based image (default):**
-```bash
-podman build --build-arg ARCHITECTURE=amd64 -f Dockerfile.ubuntu -t sterling-cli:1.0.0-ubuntu .
-```
-
-For ARM64 architecture:
-```bash
-podman build --build-arg ARCHITECTURE=arm64 -f Dockerfile.ubuntu -t sterling-cli:1.0.0-ubuntu .
-```
-
-
-## Test image
+## Test Image
 
 To run your container and start a shell session, use:
 
-**Red Hat UBI9 based image:**
 ```bash
 podman run -it --rm localhost/sterling-cli:1.0.0
 ```
 
-**Ubuntu based image:**
-```bash
-podman run -it --rm localhost/sterling-cli:1.0.0-ubuntu
-```
-
-## Publish image to Quay.io
+## Publish Image to Quay.io
 
 1. Tag your image with your Quay.io repository name:
 
-**Red Hat UBI9 based image:**
 ```bash
 podman tag localhost/sterling-cli:1.0.0 quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
 ```
 
-**Ubuntu based image:**
-```bash
-podman tag localhost/sterling-cli:1.0.0-ubuntu quay.io/$QUAYIO_REPO/sterling-cli:1.0.0-ubuntu
-```
-
-
-
 2. Finally, push your tagged image to Quay.io:
 
-**Red Hat UBI9 based image:**
 ```bash
 podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0
-```
-
-**Ubuntu based image:**
-```bash
-podman push quay.io/$QUAYIO_REPO/sterling-cli:1.0.0-ubuntu
 ```
 
 
