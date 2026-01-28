@@ -25,7 +25,7 @@ RUN useradd -u 1010 -g 0 -d /app-root -s /bin/bash -c "Sterling user" sterling &
     install -d -m 2775 -o sterling -g root /app-root
 
 # Install system dependencies
-RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip && \
+RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip glibc-all-langpacks && \
     dnf clean all && \
     rm -rf /var/cache/yum /var/cache/dnf
 
