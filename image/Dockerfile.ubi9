@@ -16,7 +16,9 @@ ENV ANSIBLE_VERSION=2.20 \
     ANSIBLE_LOCAL_TEMP=/app-root/.ansible/tmp \
     PATH="/app-root:/usr/local/bin:${PATH}" \
     VIRTUAL_ENV_DISABLE_PROMPT=1 \
-    PYTHONWARNINGS="ignore:Unverified HTTPS request"
+    PYTHONWARNINGS="ignore:Unverified HTTPS request" \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
 
 USER root
 
@@ -26,6 +28,7 @@ RUN useradd -u 1010 -g 0 -d /app-root -s /bin/bash -c "Sterling user" sterling &
 
 # Install system dependencies
 RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip glibc-all-langpacks && \
+    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
     dnf clean all && \
     rm -rf /var/cache/yum /var/cache/dnf
 

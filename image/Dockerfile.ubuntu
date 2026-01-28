@@ -17,7 +17,9 @@ ENV ANSIBLE_VERSION=2.20 \
     ANSIBLE_LOCAL_TEMP=/app-root/.ansible/tmp \
     PATH="/app-root:/usr/local/bin:${PATH}" \
     VIRTUAL_ENV_DISABLE_PROMPT=1 \
-    PYTHONWARNINGS="ignore:Unverified HTTPS request"
+    PYTHONWARNINGS="ignore:Unverified HTTPS request" \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
 
 USER root
 
@@ -35,6 +37,7 @@ RUN apt-get update && \
         python3-kubernetes python3-openshift \
         ansible \
         git wget unzip tar gzip ca-certificates curl jq openjdk-21-jre-headless glibc-common && \
+    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
     # Set Python 3.12 as default
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
     update-alternatives --set python3 /usr/bin/python3.12 && \
