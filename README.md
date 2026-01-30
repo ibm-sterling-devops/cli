@@ -158,7 +158,7 @@ Export variables and login to Quay.io:
 ```bash
 export QUAYIO_USERNAME=<your-quay-username>
 export QUAYIO_PASSWORD=<your-quay-password>
-export QUAYIO_REPO=quay.io/<your-quay-repository>
+export QUAYIO_REPO=quay.io/ibm-sterling-devops
 
 podman login quay.io -u "$QUAYIO_USERNAME" -p "$QUAYIO_PASSWORD"
 ```
