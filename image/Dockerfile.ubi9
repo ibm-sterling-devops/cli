@@ -12,26 +12,17 @@ ENV HELM_VERSION=3.16.3 \
     HOME=/opt/app-root/src \
     ANSIBLE_CONFIG=/opt/app-root/src/ansible-ibm-sterling/ansible.cfg \
     PATH="/opt/app-root/src:/usr/local/bin:${PATH}" \
-    PYTHONWARNINGS="ignore:Unverified HTTPS request" \
-    LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
-    LC_CTYPE=en_US.UTF-8 \
-    PYTHONIOENCODING=utf-8 \
-    PYTHONCOERCECLOCALE=0 \
-    PYTHONUTF8=1
+    PYTHONWARNINGS="ignore:Unverified HTTPS request" 
 
 USER root
 
 # Install system dependencies and locale support
-RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip glibc-all-langpacks glibc-langpack-en && \
-    # Generate locale
-    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
+RUN dnf install -y jq git java-21-openjdk-headless wget unzip tar gzip && \
     dnf clean all && \
     rm -rf /var/cache/yum /var/cache/dnf
 
 # Copy installation scripts and Python fixes
 COPY install /tmp/install
-COPY home/sitecustomize.py /usr/lib64/python3.12/site-packages/sitecustomize.py
 
 # Install Python packages
 RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
@@ -42,20 +33,19 @@ RUN cd /tmp && \
     bash -x /tmp/install/install-helm.sh --target-platform $ARCHITECTURE --helm-version $HELM_VERSION && \
     bash -x /tmp/install/install-oc-client.sh --target-platform $ARCHITECTURE && \
     bash -x /tmp/install/install-oc-ibmpak.sh --target-platform $ARCHITECTURE --ibmpak-version $IBMPAK_VERSION && \
-    #bash -x /tmp/install/install-ibmcloud.sh --target-platform $ARCHITECTURE --ibmcli-version $IBMCLI_VERSION && \
-    #bash -x /tmp/install/install-rclone.sh --target-platform $ARCHITECTURE && \
+    bash -x /tmp/install/install-ibmcloud.sh --target-platform $ARCHITECTURE --ibmcli-version $IBMCLI_VERSION && \
+    bash -x /tmp/install/install-rclone.sh --target-platform $ARCHITECTURE && \
     # Verify installations
-    echo "=== Verifying installations ===" && \
     ls -lah /usr/local/bin/ && \
     helm version && \
     oc version --client && \
     kubectl version --client && \
-    oc ibm-pak --version
-    #ibmcloud version && \
-    #rclone version
+    oc ibm-pak --version && \
+    ibmcloud version && \
+    rclone version
 
 # Install Ansible collections, fix permissions and cleanup
-RUN ansible-galaxy collection install kubernetes.core community.general && \
+RUN ansible-galaxy collection install kubernetes.core && \
     # Fix permissions for default user
     bash -x /tmp/install/fix_permissions.sh && \
     # Clean up
