@@ -33,7 +33,7 @@ if [[ "$TARGET_PLATFORM" == "amd64" ]]; then
   curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
   chmod 700 get_helm.sh
   DESIRED_VERSION=v${HELM_VERSION} ./get_helm.sh
-  chown sterling:root /usr/local/bin/helm
+  chown 1001:root /usr/local/bin/helm
   chmod  g=u /usr/local/bin/helm
   chmod 777 /usr/local/bin/helm
 else

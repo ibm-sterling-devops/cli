@@ -47,7 +47,7 @@ rm -rf Bluemix_CLI IBM_Cloud_CLI_${CLI_VERSION}_${TARGET_PLATFORM}.tar.gz
 ibmcloud config --check-version=false
 
 ## Fix up permissions so that the group has the same permissions as the (root) user
-##chown -R sterling:root /app-root/.bluemix
+##chown -R 1001:root /app-root/.bluemix
 ##chmod -R g=u /app-root/.bluemix
 
 echo "ibmcloud version:"
